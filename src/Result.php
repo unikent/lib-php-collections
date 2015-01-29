@@ -76,14 +76,17 @@ class Result
         }
 
         if ($this->file_count_i == 1) {
-            return 'http://collections.kent.ac.uk/image.php?id=' . $this->files_t;
+            return "http://collections.kent.ac.uk/{$this->collection}/image.php?id=" . $this->files_t;
         }
 
         $files = explode(',', $this->files_t);
 
-        return array_map(function($file) {
-            return 'http://collections.kent.ac.uk/image.php?id=' . $file;
-        }, $files);
+        $result = array();
+        foreach ($files as $file) {
+            $result[] = "http://collections.kent.ac.uk/{$this->collection}/image.php?id=" . $file;
+        }
+
+        return $result;
     }
 
     /**
