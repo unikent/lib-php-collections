@@ -26,9 +26,9 @@ class API
     const VERDI = 'collections';
 
     /**
-     * The collection we are using.
+     * The solr client we are using.
      */
-    private $_collection;
+    private $_solrclient;
 
     /**
      * Constructor.
@@ -49,13 +49,21 @@ class API
             throw new \Exception("Invalid collection name: '{$collection}'");
         }
 
-        $this->_collection = $collection;
+        $this->_solrclient = new \Solarium\Client(array(
+            'endpoint' => array(
+                'localhost' => array(
+                    'host' => 'collections.kent.ac.uk',
+                    'port' => 8080,
+                    'path' => '/solr/' . $collection . '/'
+                )
+            )
+        ));
     }
 
     /**
      * Returns a search interface.
      */
     public function get_search() {
-        return new Search($this->_collection);
+        return new Search($this->_solrclient);
     }
 }
