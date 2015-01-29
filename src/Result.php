@@ -58,14 +58,14 @@ abstract class Result
         }
 
         if ($this->file_count_i == 1) {
-            return "http://collections.kent.ac.uk/api/{$this->collection}/image.php?request=" . $this->files_t . '/' . $size;
+            return "http://collections.kent.ac.uk/api/image.php?request=" . $this->files_t . '/' . $size;
         }
 
         $files = explode(',', $this->files_t);
 
         $result = array();
         foreach ($files as $file) {
-            $result[] = "http://collections.kent.ac.uk/api/{$this->collection}/image.php?request=" . $file . '/' . $size;
+            $result[] = "http://collections.kent.ac.uk/api/image.php?request=" . $file . '/' . $size;
         }
 
         return $result;
