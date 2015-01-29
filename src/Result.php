@@ -52,20 +52,20 @@ abstract class Result
     /**
      * Get an image url (or urls).
      */
-    public function image_url() {
+    public function image_url($size = 'full') {
         if (!isset($this->file_count_i)) {
             return null;
         }
 
         if ($this->file_count_i == 1) {
-            return "http://collections.kent.ac.uk/{$this->collection}/image.php?id=" . $this->files_t;
+            return "http://collections.kent.ac.uk/api/{$this->collection}/image.php?request=" . $this->files_t . '/' . $size;
         }
 
         $files = explode(',', $this->files_t);
 
         $result = array();
         foreach ($files as $file) {
-            $result[] = "http://collections.kent.ac.uk/{$this->collection}/image.php?id=" . $file;
+            $result[] = "http://collections.kent.ac.uk/api/{$this->collection}/image.php?request=" . $file . '/' . $size;
         }
 
         return $result;
@@ -75,17 +75,6 @@ abstract class Result
      * Get an image thumbnail urls.
      */
     public function thumbnail_url() {
-        $urls = $this->image_url();
-        if (!$urls) {
-            return null;
-        }
-
-        if (!is_array($urls)) {
-            return $urls . '&size=thumb';
-        }
-
-        return array_map(function($url) {
-            return $url . '&size=thumb';
-        }, $urls);
+        return $this->image_url('thumb');
     }
 }
