@@ -1,0 +1,26 @@
+{
+   "name": "unikent/lib-php-specialcollections",
+   "description": "Special Collections API for PHP.",
+   "type": "library",
+   "keywords": [
+      "library", "api", "specialcollections"
+   ],
+   "homepage": "https://github.com/unikent/lib-php-specialcollections",
+   "authors": [{
+      "name": "Skylar Tristan Kelty",
+      "email": "s.kelty@kent.ac.uk",
+      "role": "lead"
+   }],
+   "require": {
+      "php": ">=5.3",
+      "solarium/solarium": "3.3.0"
+   },
+   "autoload": {
+      "psr-4": {
+         "unikent\\SpecialCollections\\": ["src/"]
+      }
+   },
+   "require-dev": {
+      "phpdocumentor/phpdocumentor": "2.7"
+   }
+}

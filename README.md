@@ -13,7 +13,7 @@ Example Usage:
 use \unikent\SpecialCollections\API as SCAPI;
 
 $api = new SCAPI();
-$api->set_collection(SCAPI::BCAD); // Also SCAPI::VERDI.
+$api->set_collection(SCAPI::BCAD); // Or SCAPI::VERDI.
 
 $search = $api->get_search();
 $search->set_query('refno', 'GW0047')
@@ -26,4 +26,3 @@ foreach ($results as $result) {
     echo '<br />';
 }
 ```
-
