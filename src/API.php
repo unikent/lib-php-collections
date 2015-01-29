@@ -61,6 +61,13 @@ class API
     }
 
     /**
+     * Returns the SOLR client.
+     */
+    public function solr_client() {
+        return $this->_solrclient;
+    }
+
+    /**
      * Returns a search interface.
      */
     public function get_search() {
