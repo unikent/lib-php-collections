@@ -11,12 +11,12 @@ namespace unikent\SpecialCollections;
 /**
  * Special Collections Result API.
  */
-class Result
+abstract class Result
 {
     /**
      * Result document.
      */
-    private $_document;
+    protected $_document;
 
     /**
      * Constructor.
@@ -42,30 +42,12 @@ class Result
     /**
      * Get document title.
      */
-    public function get_title() {
-        $str = '';
-
-        if (isset($this->refno_t)) {
-            $str = $this->refno_t;
-
-            if (isset($this->altrefno_t)) {
-                $str .= ' / ' . $this->altrefno_t;
-            }
-        }
-
-        return $str;
-    }
+    public abstract function get_title();
 
     /**
      * Get a description.
      */
-    public function get_description() {
-        if (isset($this->embeddedText_t)) {
-            return $this->embeddedText_t;
-        }
-
-        return '';
-    }
+    public abstract function get_description();
 
     /**
      * Get an image url (or urls).

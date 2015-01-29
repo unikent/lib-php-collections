@@ -137,7 +137,8 @@ class Search
 
         $resultsset = $this->_solrclient->select($query);
         foreach ($resultset as $document) {
-            $results[] = new Result($document);
+            $class = $document->collection = 'cartoons' ? 'CartoonsResult' : 'CollectionsResult';
+            $results[] = new $class($document);
         }
 
         return $results;
