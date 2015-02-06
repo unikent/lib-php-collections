@@ -52,12 +52,17 @@ class API
     private $_port;
 
     /**
+     * Our SOLR port.
+     */
+    private $_solr_port;
+
+    /**
      * Constructor.
      *
      * @param string $url The endpoint of SOLR.
      * @param string $collection The name of the collection.
      */
-    private function __construct($url, $collection, $port = 8080) {
+    private function __construct($url, $collection, $port = 80, $solrport = 8080) {
         if ($collection != static::CARTOONS || $collection != static::COLLECTIONS) {
             throw new \Exception("Invalid collection name: '{$collection}'");
         }
@@ -65,6 +70,7 @@ class API
         $this->_url = $url;
         $this->_collection = $collection;
         $this->_port = $port;
+        $this->_solr_port = $solrport;
     }
 
     /**
@@ -83,7 +89,7 @@ class API
      * @param string $collection The name of the collection.
      */
     public final function create_live($collection) {
-        return static::create('collections.kent.ac.uk', $collection);
+        return static::create('collections.kent.ac.uk', $collection, 80, 80);
     }
 
     /**
@@ -92,7 +98,7 @@ class API
      * @param string $collection The name of the collection.
      */
     public final function create_test($collection) {
-        return static::create('collections-test.kent.ac.uk', $collection);
+        return static::create('collections-test.kent.ac.uk', $collection, 80, 80);
     }
 
     /**
@@ -113,7 +119,7 @@ class API
                 'endpoint' => array(
                     'localhost' => array(
                         'host' => $this->_url,
-                        'port' => $this->_port,
+                        'port' => $this->_solr_port,
                         'path' => '/solr/' . $this->_collection . '/'
                     )
                 )
@@ -161,9 +167,12 @@ class API
             $base .= 'http://';
         }
 
-        $bcase .= $this->_url;
+        $base .= $this->_url;
+        if ($this->_port != 80) {
+            $base .= ':' . $this->_port;
+        }
 
-        $rurl = new \Rapid\URL($bcase . '/api/' . $url, $params);
+        $rurl = new \Rapid\URL($base . '/api/' . $url, $params);
         return $rurl->out();
     }
 
