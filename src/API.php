@@ -31,27 +31,62 @@ class API
     private $_solrclient;
 
     /**
-     * Set the collection we want to query.
+     * API endpoint.
+     */
+    private $_url;
+
+    /**
+     * Our chosen collection.
+     */
+    private $_collection;
+
+    /**
+     * Our port.
+     */
+    private $_port;
+
+    /**
+     * Constructor.
      *
-     * @see \unikent\SpecialCollections\API::BCAD
-     * @see \unikent\SpecialCollections\API::VERDI
      * @param string $url The endpoint of SOLR.
      * @param string $collection The name of the collection.
      */
-    public final function set_collection($url, $collection) {
+    private function __construct($url, $collection, $port = 8080) {
         if ($collection != static::BCAD || $collection != static::VERDI) {
             throw new \Exception("Invalid collection name: '{$collection}'");
         }
 
-        $this->_solrclient = new \Solarium\Client(array(
-            'endpoint' => array(
-                'localhost' => array(
-                    'host' => $url,
-                    'port' => 8080,
-                    'path' => '/solr/' . $collection . '/'
-                )
-            )
-        ));
+        $this->_url = $url;
+        $this->_collection = $collection;
+        $this->_port = $port;
+    }
+
+    /**
+     * Set the collection we want to query.
+     *
+     * @param string $url The endpoint of SOLR.
+     * @param string $collection The name of the collection.
+     */
+    public static final function create($url, $collection) {
+        return new static($url, $collection);
+    }
+
+    /**
+     * Shortcut for creating a live collection.
+     * 
+     * @param string $collection The name of the collection.
+     */
+    public final function create_live($collection) {
+        return static::create('collections.kent.ac.uk', $collection);
+    }
+
+    /**
+     * Shortcut for creating a test collection.
+     * 
+     * @param string $collection The name of the collection.
+     */
+    public final function create_test($collection) {
+        return static::create('collections-test.kent.ac.uk', $collection);
     }
 
     /**
@@ -59,8 +94,17 @@ class API
      */
     public function solr_client() {
         if (!isset($this->_solrclient)) {
-             $this->set_collection('collections.kent.ac.uk', static::BCAD);
+            $this->_solrclient = new \Solarium\Client(array(
+                'endpoint' => array(
+                    'localhost' => array(
+                        'host' => $this->_url,
+                        'port' => $this->_port,
+                        'path' => '/solr/' . $this->_collection . '/'
+                    )
+                )
+            ));
         }
+
         return $this->_solrclient;
     }
 
