@@ -16,14 +16,20 @@ namespace unikent\SpecialCollections;
 class API
 {
     /**
-     * The name of the BCAD collection.
+     * Internal numbers for collections.
      */
-    const BCAD = 'cartoons';
+    const TYPE_CARTOONS = 1;
+    const TYPE_COLLECTIONS = 2;
 
     /**
-     * The name of the VERDI collection.
+     * The name of the Cartoons collection.
      */
-    const VERDI = 'collections';
+    const CARTOONS = 'cartoons';
+
+    /**
+     * The name of the Special Collections collection.
+     */
+    const COLLECTIONS = 'collections';
 
     /**
      * The solr client we are using.
@@ -52,7 +58,7 @@ class API
      * @param string $collection The name of the collection.
      */
     private function __construct($url, $collection, $port = 8080) {
-        if ($collection != static::BCAD || $collection != static::VERDI) {
+        if ($collection != static::CARTOONS || $collection != static::COLLECTIONS) {
             throw new \Exception("Invalid collection name: '{$collection}'");
         }
 
@@ -90,6 +96,15 @@ class API
     }
 
     /**
+     * Returns our numeric type.
+     *
+     * @internal
+     */
+    public function get_type() {
+        return ($this->_collection == static::CARTOONS) ? static::TYPE_CARTOONS : static::TYPE_COLLECTIONS;
+    }
+
+    /**
      * Returns the SOLR client.
      */
     public function solr_client() {
@@ -113,5 +128,60 @@ class API
      */
     public function get_search() {
         return new Search($this->solr_client());
+    }
+
+    /**
+     * CURL shorthand.
+     *
+     * @internal
+     * @param string $url The URL to curl.
+     */
+    protected function curl($url) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,            $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER,         false);
+        curl_setopt($ch, CURLOPT_HTTP_VERSION,   CURL_HTTP_VERSION_1_1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER,     array('Content-Type: text/plain'));
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 2000);
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 2000);
+
+        return curl_exec($ch);
+    }
+
+    /**
+     * Build a REST URL.
+     *
+     * @internal.
+     */
+    protected function build_rest_url($url, $params) {
+        $base = '';
+        if (substr($this->_url, 0, 4) !== 'http') {
+            $base .= 'http://';
+        }
+
+        $bcase .= $this->_url;
+
+        $rurl = new \Rapid\URL($bcase . '/api/' . $url, $params);
+        return $rurl->out();
+    }
+
+    /**
+     * Shorthand for API call.
+     */
+    protected function api_call($url, $params) {
+        $url = $this->build_rest_url($url, $params);
+        $result = $this->curl($url);
+        return json_decode($result);
+    }
+
+    /**
+     * Returns a list of images in the collection.
+     */
+    public function list_images() {
+        return $this->api_call('images.php', array(
+            'collection' => $this->get_type()
+        ));
     }
 }
