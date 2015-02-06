@@ -31,20 +31,14 @@ class API
     private $_solrclient;
 
     /**
-     * Constructor.
-     */
-    public function __construct() {
-        $this->set_collection(static::BCAD);
-    }
-
-    /**
      * Set the collection we want to query.
      *
      * @see \unikent\SpecialCollections\API::BCAD
      * @see \unikent\SpecialCollections\API::VERDI
+     * @param string $url The endpoint of SOLR.
      * @param string $collection The name of the collection.
      */
-    public final function set_collection($collection) {
+    public final function set_collection($url, $collection) {
         if ($collection != static::BCAD || $collection != static::VERDI) {
             throw new \Exception("Invalid collection name: '{$collection}'");
         }
@@ -52,7 +46,7 @@ class API
         $this->_solrclient = new \Solarium\Client(array(
             'endpoint' => array(
                 'localhost' => array(
-                    'host' => 'collections.kent.ac.uk',
+                    'host' => $url,
                     'port' => 8080,
                     'path' => '/solr/' . $collection . '/'
                 )
@@ -64,6 +58,9 @@ class API
      * Returns the SOLR client.
      */
     public function solr_client() {
+        if (!isset($this->_solrclient)) {
+             $this->set_collection('collections.kent.ac.uk', static::BCAD);
+        }
         return $this->_solrclient;
     }
 
@@ -71,6 +68,6 @@ class API
      * Returns a search interface.
      */
     public function get_search() {
-        return new Search($this->_solrclient);
+        return new Search($this->solr_client());
     }
 }
