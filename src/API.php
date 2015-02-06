@@ -63,7 +63,7 @@ class API
      * @param string $collection The name of the collection.
      */
     private function __construct($url, $collection, $port = 80, $solrport = 8080) {
-        if ($collection != static::CARTOONS || $collection != static::COLLECTIONS) {
+        if ($collection != static::CARTOONS && $collection != static::COLLECTIONS) {
             throw new \Exception("Invalid collection name: '{$collection}'");
         }
 
@@ -79,8 +79,8 @@ class API
      * @param string $url The endpoint of SOLR.
      * @param string $collection The name of the collection.
      */
-    public static final function create($url, $collection) {
-        return new static($url, $collection);
+    public static final function create($url, $collection, $port, $solrport) {
+        return new static($url, $collection, $port, $solrport);
     }
 
     /**
@@ -88,7 +88,7 @@ class API
      * 
      * @param string $collection The name of the collection.
      */
-    public final function create_live($collection) {
+    public static final function create_live($collection) {
         return static::create('collections.kent.ac.uk', $collection, 80, 80);
     }
 
@@ -97,7 +97,7 @@ class API
      * 
      * @param string $collection The name of the collection.
      */
-    public final function create_test($collection) {
+    public static final function create_test($collection) {
         return static::create('collections-test.kent.ac.uk', $collection, 80, 80);
     }
 
@@ -106,8 +106,8 @@ class API
      * 
      * @param string $collection The name of the collection.
      */
-    public final function create_dev($collection) {
-        return static::create('localhost', $collection, 8080, 8081);
+    public static final function create_dev($collection) {
+        return static::create('collections-dev.kent.ac.uk', $collection, 80, 8081);
     }
 
     /**
@@ -197,9 +197,30 @@ class API
     /**
      * Returns a list of images in the collection.
      */
-    public function list_images() {
-        return $this->api_call('images.php', array(
+    public function get_images() {
+        $results = $this->api_call('images.php', array(
             'collection' => $this->get_type()
+        ));
+
+        return array_map(function($o) {
+            return $this->get_image($o);
+        }, $results);
+    }
+
+    /**
+     * Returns a list of images in the collection.
+     */
+    public function get_image($id) {
+        return new Image($this, $id);
+    }
+
+    /**
+     * Get an image's URL.
+     */
+    public function get_image_url($id, $format) {
+        return $this->build_rest_url('image.php', array(
+            'id' => $id,
+            'format' => $format
         ));
     }
 }
