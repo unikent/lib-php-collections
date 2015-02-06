@@ -102,6 +102,15 @@ class API
     }
 
     /**
+     * Shortcut for creating a test collection.
+     * 
+     * @param string $collection The name of the collection.
+     */
+    public final function create_dev($collection) {
+        return static::create('localhost', $collection, 8080, 8081);
+    }
+
+    /**
      * Returns our numeric type.
      *
      * @internal
