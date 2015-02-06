@@ -170,7 +170,7 @@ class API
      *
      * @internal.
      */
-    protected function build_rest_url($url, $params) {
+    protected function build_rest_url($url, $params = array()) {
         $base = '';
         if (substr($this->_url, 0, 4) !== 'http') {
             $base .= 'http://';
@@ -222,5 +222,21 @@ class API
             'id' => $id,
             'format' => $format
         ));
+    }
+
+    /**
+     * Get an image's Zoomify URL.
+     */
+    public function get_zoomify_url($id) {
+        return $this->build_rest_url('zoomify.php', array(
+            'request' => $id
+        ));
+    }
+
+    /**
+     * Get an image's Zoomify SWF URL.
+     */
+    public function get_zoomify_swf_url() {
+        return $this->build_rest_url('media/ZoomifyRotationViewer.swf');
     }
 }

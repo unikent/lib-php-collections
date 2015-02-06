@@ -56,6 +56,30 @@ class Image
     }
 
     /**
+     * Get Zoomify Object.
+     */
+    public function render_zoomify($width = 800, $height = 500) {
+        $zoomifyswfurl = $this->_api->get_zoomify_swf_url();
+        $zoomifyurl = $this->_api->get_zoomify_url($this->_id);
+        return <<<HTML5
+            <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="$width" height="$height" id="zoomify-viewer">
+                <param name="flashvars" value="zoomifyImagePath=$zoomifyurl">
+                <param name="menu" value="false">
+                <param name="src" value="$zoomifyswfurl">
+                <embed  flashvars="zoomifyImagePath=$zoomifyurl"
+                        src="$zoomifyswfurl"
+                        menu="false"
+                        pluginspage="http://www.adobe.com/go/getflashplayer" 
+                        type="application/x-shockwave-flash"
+                        width="$width"
+                        height="$height"
+                        name="zoomify-viewer">
+                </embed>
+            </object>
+HTML5;
+    }
+
+    /**
      * To String
      */
     public function __toString() {
