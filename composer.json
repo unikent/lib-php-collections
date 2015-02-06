@@ -1,11 +1,11 @@
 {
-   "name": "unikent/lib-php-specialcollections",
+   "name": "unikent/lib-php-collections",
    "description": "Special Collections API for PHP.",
    "type": "library",
    "keywords": [
-      "library", "api", "specialcollections"
+      "library", "api", "special collections"
    ],
-   "homepage": "https://github.com/unikent/lib-php-specialcollections",
+   "homepage": "https://github.com/unikent/lib-php-collections",
    "authors": [{
       "name": "Skylar Tristan Kelty",
       "email": "s.kelty@kent.ac.uk",
