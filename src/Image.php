@@ -62,20 +62,12 @@ class Image
         $zoomifyswfurl = $this->_api->get_zoomify_swf_url();
         $zoomifyurl = $this->_api->get_zoomify_url($this->_id);
 
-        $params = array(
-            'flashvars' => "zoomifyImagePath=$zoomifyurl",
-            'src' => $zoomifyswfurl,
-            'menu' => "false",
-            'pluginspage' => "http://www.adobe.com/go/getflashplayer" ,
-            'type' => "application/x-shockwave-flash",
-            'width' => $width,
-            'height' => $height,
-            'name' => "zoomify-viewer"
-        );
-        $params = join(' ', $params);
-
         return <<<HTML5
-            <embed $params></embed>
+            <object type="application/x-shockwave-flash" data="$zoomifyswfurl" width="$width" height="$height">
+                <param name="flashvars" value="zoomifyImagePath=$zoomifyurl" />
+                <param name="movie" value="$zoomifyswfurl" />
+                <param name="quality" value="high" />
+            </object>
 HTML5;
     }
 
